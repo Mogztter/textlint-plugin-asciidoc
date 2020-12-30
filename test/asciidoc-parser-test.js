@@ -7,33 +7,33 @@ const assert = require('assert'),
   LineReader = require('../lib/line-reader')
 
 describe('AsciiDocParser', () => {
-  context('DocumentNode', () => {
-    it('should create sparse DocumentNode from empty document', () => {
+  context('Document node', () => {
+    it('should create sparse Document node from empty document', () => {
       const result = parseFixture(loadFixture('empty.adoc'))
-      assert.equal(result.type, 'DocumentNode')
+      assert.equal(result.type, 'Document')
       assert.equal(result.raw, '')
       assert.deepEqual(result.range, [0, 0])
       assert.deepEqual(result.loc.start, { line: 1, column: 0 })
       assert.deepEqual(result.loc.end, { line: 1, column: 0 })
       assert.deepEqual(result.children, [])
     })
-    it('should store raw text of document in raw property of DocumentNode', () => {
+    it('should store raw text of document in raw property of Document node', () => {
       const fixture = loadFixture('sample.adoc'),
           result = parseFixture(fixture)
-      assert.equal(result.type, 'DocumentNode')
+      assert.equal(result.type, 'Document')
       // FIXME raw should preserve trailing newline
       assert.equal(result.raw, fixture.contents)
     })
   })
 
-  context('HeaderNode', () => {
-    it('should create HeaderNode if document starts with doctitle', () => {
+  context('Header node', () => {
+    it('should create Header node if document starts with doctitle', () => {
       const result = parseFixture(loadFixture('doctitle.adoc'))
-      assert.equal(result.type, 'DocumentNode')
+      assert.equal(result.type, 'Document')
       assert.equal(result.raw, '= Document Title\n')
       assert.equal(result.children.length, 1)
       const header = result.children[0]
-      assert.equal(header.type, 'HeaderNode')
+      assert.equal(header.type, 'Header')
       assert.deepEqual(header.range, result.range)
       // TODO assert header node has children
     })
@@ -42,11 +42,11 @@ describe('AsciiDocParser', () => {
       const result = parseFixture(loadFixture('do-not-edit.adoc'))
       assert.equal(result.children.length, 1)
       const header = result.children[0]
-      assert.equal(header.type, 'HeaderNode')
+      assert.equal(header.type, 'Header')
       assert.deepEqual(header.loc.start, { line: 1, column: 0 })
       assert.deepEqual(header.loc.end, { line: 8, column: 20 })
       assert.equal(header.children.length, 2)
-      assert.equal(header.children[0].type, 'LineNode')
+      assert.equal(header.children[0].type, 'Str')
       assert.equal(header.children[1].type, 'AttributeEntryNode')
     })
     // TEMPORARY
@@ -115,7 +115,7 @@ describe('AsciiDocParser', () => {
     it('should terminate SectionNode at start of sibling section', () => {
       const result = parseFixture(loadFixture('sections.adoc'))
       assert.equal(result.children.length, 3)
-      const endingLines = [3, 7, 11] 
+      const endingLines = [3, 7, 11]
       result.children.forEach((sect, idx) => {
         assert.equal(sect.type, 'SectionNode')
         assert.equal(sect.children.length, 1)
