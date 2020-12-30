@@ -52,12 +52,12 @@ describe('AsciiDocParser', () => {
     // TEMPORARY
   })
 
-  context('ParagraphNode', () => {
-    it('should create ParagraphNode with one LineNode child if document contains one line of prose', () => {
+  context('Paragraph node', () => {
+    it('should create Paragraph node with one LineNode child if document contains one line of prose', () => {
       const result = parseFixture(loadFixture('paragraph-single-line.adoc'))
       assert.equal(result.children.length, 1)
       const para = result.children[0]
-      assert.equal(para.type, 'ParagraphNode')
+      assert.equal(para.type, 'Paragraph')
       assert.deepEqual(para.range, [0, 33])
       assert.deepEqual(para.loc.start, { line: 1, column: 0 })
       assert.deepEqual(para.loc.end, { line: 1, column: 33 })
@@ -67,7 +67,7 @@ describe('AsciiDocParser', () => {
       assert.equal(line.type, 'LineNode')
       assert.equal(getSource(line, result), 'All this happened, more or less.\n')
     })
-    it('should create ParagraphNode with multiple LineNode children if document contains sequential lines of prose', () => {
+    it('should create Paragraph node with multiple LineNode children if document contains sequential lines of prose', () => {
       const result = parseFixture(loadFixture('paragraph-multiline.adoc'))
       assert.equal(result.children.length, 1)
       const para = result.children[0]
@@ -77,14 +77,14 @@ describe('AsciiDocParser', () => {
       assert.equal(line2.type, 'LineNode')
       assert.deepEqual(line2.loc.end, { line: 2, column: 26 })
     })
-    it('should create ParagraphNode for each sequence of prose lines separated by a blank line', () => {
+    it('should create Paragraph node for each sequence of prose lines separated by a blank line', () => {
       const result = parseFixture(loadFixture('paragraphs.adoc'))
       assert.equal(result.children.length, 2)
       const [para1, para2] = result.children
-      assert.equal(para1.type, 'ParagraphNode')
+      assert.equal(para1.type, 'Paragraph')
       assert.deepEqual(para1.loc.start, { line: 1, column: 0 })
       assert.deepEqual(para1.loc.end, { line: 1, column: 121 })
-      assert.equal(para2.type, 'ParagraphNode')
+      assert.equal(para2.type, 'Paragraph')
       assert.deepEqual(para2.loc.start, { line: 3, column: 0 })
       assert.deepEqual(para2.loc.end, { line: 3, column: 156 })
     })
@@ -109,7 +109,7 @@ describe('AsciiDocParser', () => {
       assert.equal(sect.type, 'SectionNode')
       assert.equal(sect.children.length, 1)
       const para = sect.children[0]
-      assert.equal(para.type, 'ParagraphNode')
+      assert.equal(para.type, 'Paragraph')
     })
 
     it('should terminate SectionNode at start of sibling section', () => {
@@ -119,7 +119,7 @@ describe('AsciiDocParser', () => {
       result.children.forEach((sect, idx) => {
         assert.equal(sect.type, 'SectionNode')
         assert.equal(sect.children.length, 1)
-        assert.equal(sect.children[0].type, 'ParagraphNode')
+        assert.equal(sect.children[0].type, 'Paragraph')
         assert.equal(sect.loc.end.line, endingLines[idx])
       })
     })
@@ -141,7 +141,7 @@ describe('AsciiDocParser', () => {
         assert.equal(line.loc.start.line, idx + 2)
       })
     })
-    it('should create DelimitedBlockNode with ParagraphNode child if document contains delimited block containing paragraph', () => {
+    it('should create DelimitedBlockNode with Paragraph node child if document contains delimited block containing paragraph', () => {
       const result = parseFixture(loadFixture('example-block.adoc'))
       assert.equal(result.children.length, 1)
       const ex = result.children[0]
@@ -154,7 +154,7 @@ describe('AsciiDocParser', () => {
       assert.equal(ex.delimiterLines[0].raw, ex.delimiterLines[1].raw)
       assert.equal(ex.children.length, 1)
       const para = ex.children[0]
-      assert.equal(para.type, 'ParagraphNode')
+      assert.equal(para.type, 'Paragraph')
     })
     it('should create DelimitedBlockNode for each sibling delimited block of same type', () => {
       const result = parseFixture(loadFixture('example-blocks.adoc'))
@@ -164,7 +164,7 @@ describe('AsciiDocParser', () => {
         assert.equal(ex.enclosureType, 'example')
         assert.equal(ex.delimiterLines.length, 2)
         assert.equal(ex.children.length, 1)
-        assert.equal(ex.children[0].type, 'ParagraphNode')
+        assert.equal(ex.children[0].type, 'Paragraph')
       })
     })
     it('should create DelimitedBlockNode for each sibling delimited block of different type', () => {
@@ -174,7 +174,7 @@ describe('AsciiDocParser', () => {
         assert.equal(block.type, 'DelimitedBlockNode')
         assert.equal(block.delimiterLines.length, 2)
         assert.equal(block.children.length, 1)
-        assert.equal(block.children[0].type, 'ParagraphNode')
+        assert.equal(block.children[0].type, 'Paragraph')
       })
     })
     it('should create DelimitedBlockNode for nested delimited block with different type as enclosure', () => {
@@ -185,9 +185,9 @@ describe('AsciiDocParser', () => {
       assert.equal(sidebar.enclosureType, 'sidebar')
       assert.equal(sidebar.children.length, 3)
       const [para1, ex, para2] = sidebar.children
-      assert.equal(para1.type, 'ParagraphNode')
+      assert.equal(para1.type, 'Paragraph')
       assert.equal(ex.type, 'DelimitedBlockNode')
-      assert.equal(para2.type, 'ParagraphNode')
+      assert.equal(para2.type, 'Paragraph')
     })
     it('should create DelimitedBlockNode for nested delimited block with same type as enclosure', () => {
       const result = parseFixture(loadFixture('like-nested-block.adoc'))
@@ -198,7 +198,7 @@ describe('AsciiDocParser', () => {
       assert.equal(ex1.delimiterLines.length, 2)
       assert.equal(ex1.children.length, 2)
       const [para, ex2] = ex1.children
-      assert.equal(para.type, 'ParagraphNode')
+      assert.equal(para.type, 'Paragraph')
       assert.equal(ex2.type, 'DelimitedBlockNode')
       assert.equal(ex2.delimiterLines.length, 2)
     })
