@@ -53,7 +53,7 @@ describe('AsciiDocParser', () => {
   })
 
   context('Paragraph node', () => {
-    it('should create Paragraph node with one LineNode child if document contains one line of prose', () => {
+    it('should create Paragraph node with one Line node child if document contains one line of prose', () => {
       const result = parseFixture(loadFixture('paragraph-single-line.adoc'))
       assert.equal(result.children.length, 1)
       const para = result.children[0]
@@ -62,19 +62,20 @@ describe('AsciiDocParser', () => {
       assert.deepEqual(para.loc.start, { line: 1, column: 0 })
       assert.deepEqual(para.loc.end, { line: 1, column: 33 })
       assert.equal(getSource(para, result), 'All this happened, more or less.\n')
+      console.log(para)
       assert.equal(para.children.length, 1)
       const line = para.children[0]
-      assert.equal(line.type, 'LineNode')
+      assert.equal(line.type, 'Str')
       assert.equal(getSource(line, result), 'All this happened, more or less.\n')
     })
-    it('should create Paragraph node with multiple LineNode children if document contains sequential lines of prose', () => {
+    it('should create Paragraph node with multiple Line node children if document contains sequential lines of prose', () => {
       const result = parseFixture(loadFixture('paragraph-multiline.adoc'))
       assert.equal(result.children.length, 1)
       const para = result.children[0]
       assert.equal(para.children.length, 2)
       const [line1, line2] = para.children
-      assert.equal(line1.type, 'LineNode')
-      assert.equal(line2.type, 'LineNode')
+      assert.equal(line1.type, 'Str')
+      assert.equal(line2.type, 'Str')
       assert.deepEqual(line2.loc.end, { line: 2, column: 26 })
     })
     it('should create Paragraph node for each sequence of prose lines separated by a blank line', () => {
@@ -126,7 +127,7 @@ describe('AsciiDocParser', () => {
   })
 
   context('DelimitedBlockNode', () => {
-    it('should create DelimitedBlockNode with LineNode children if delimited block is verbatim', () => {
+    it('should create DelimitedBlockNode with Line node children if delimited block is verbatim', () => {
       const result = parseFixture(loadFixture('verbatim-block.adoc'))
       assert.equal(result.children.length, 1)
       const lit = result.children[0]
@@ -137,7 +138,7 @@ describe('AsciiDocParser', () => {
       assert.equal(lit.delimiterLines[0].raw, lit.delimiterLines[1].raw)
       assert.equal(lit.children.length, 5)
       lit.children.forEach((line, idx) => {
-        assert.equal(line.type, 'LineNode')
+        assert.equal(line.type, 'Str')
         assert.equal(line.loc.start.line, idx + 2)
       })
     })
