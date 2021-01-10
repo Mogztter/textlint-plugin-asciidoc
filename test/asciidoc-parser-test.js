@@ -203,6 +203,18 @@ describe('AsciiDocParser', () => {
       assert.equal(ex2.type, 'DelimitedBlockNode')
       assert.equal(ex2.delimiterLines.length, 2)
     })
+    it('should create CodeBlock when the first line of a paragraph is indented by one or more spaces', () => {
+      const result = parseFixture(loadFixture('literal-indent.adoc'))
+      assert.equal(result.children.length, 1)
+      const ex = result.children[0]
+      assert.equal(ex.type, 'CodeBlock')
+      assert.equal(ex.enclosureType, 'literal')
+      assert.deepEqual(ex.loc.start, { line: 1, column: 0 })
+      assert.deepEqual(ex.loc.end, { line: 1, column: 34 })
+      assert.equal(ex.children.length, 1)
+      const str = ex.children[0]
+      assert.equal(str.type, 'Str')
+    })
     it('should end delimited block prematurely if end of document is reached', () => {
       const result = parseFixture(loadFixture('unterminated-block.adoc'))
       assert.equal(result.children.length, 1)
