@@ -215,6 +215,18 @@ describe('AsciiDocParser', () => {
       const str = ex.children[0]
       assert.equal(str.type, 'Str')
     })
+    it('should create CodeBlock for delimited listing block', () => {
+      const result = parseFixture(loadFixture('delimited-listing-block.adoc'))
+      assert.equal(result.children.length, 1)
+      const ex = result.children[0]
+      assert.equal(ex.type, 'CodeBlock')
+      assert.equal(ex.enclosureType, 'listing')
+      assert.deepEqual(ex.loc.start, { line: 1, column: 0 })
+      assert.deepEqual(ex.loc.end, { line: 5, column: 5 })
+      assert.equal(ex.children.length, 3)
+      const str = ex.children[0]
+      assert.equal(str.type, 'Str')
+    })
     it('should end delimited block prematurely if end of document is reached', () => {
       const result = parseFixture(loadFixture('unterminated-block.adoc'))
       assert.equal(result.children.length, 1)
