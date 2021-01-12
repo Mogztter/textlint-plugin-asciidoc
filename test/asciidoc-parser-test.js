@@ -62,7 +62,6 @@ describe('AsciiDocParser', () => {
       assert.deepEqual(para.loc.start, { line: 1, column: 0 })
       assert.deepEqual(para.loc.end, { line: 1, column: 33 })
       assert.equal(getSource(para, result), 'All this happened, more or less.\n')
-      console.log(para)
       assert.equal(para.children.length, 1)
       const line = para.children[0]
       assert.equal(line.type, 'Str')
@@ -100,7 +99,10 @@ describe('AsciiDocParser', () => {
       assert.deepEqual(sect.range, [0, 9])
       assert.deepEqual(sect.loc.start, { line: 1, column: 0 })
       assert.deepEqual(sect.loc.end, { line: 1, column: 9 })
-      assert.deepEqual(sect.children, [])
+      const sectionTitle = sect.children[0]
+      assert.equal(sectionTitle.type, 'Header')
+      assert.equal(sectionTitle.raw, 'Usage\n')
+      assert.equal(sectionTitle.depth, 2)
     })
 
     it('should add blocks that follow section title to SectionNode', () => {
@@ -108,8 +110,8 @@ describe('AsciiDocParser', () => {
       assert.equal(result.children.length, 1)
       const sect = result.children[0]
       assert.equal(sect.type, 'SectionNode')
-      assert.equal(sect.children.length, 1)
-      const para = sect.children[0]
+      assert.equal(sect.children.length, 2)
+      const para = sect.children[1]
       assert.equal(para.type, 'Paragraph')
     })
 
@@ -119,8 +121,8 @@ describe('AsciiDocParser', () => {
       const endingLines = [3, 7, 11]
       result.children.forEach((sect, idx) => {
         assert.equal(sect.type, 'SectionNode')
-        assert.equal(sect.children.length, 1)
-        assert.equal(sect.children[0].type, 'Paragraph')
+        assert.equal(sect.children.length, 2)
+        assert.equal(sect.children[1].type, 'Paragraph')
         assert.equal(sect.loc.end.line, endingLines[idx])
       })
     })
