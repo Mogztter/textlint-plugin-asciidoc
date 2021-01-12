@@ -55,6 +55,7 @@ describe('AsciiDocParser', () => {
       const documentTitleStr = documentTitle.children[0]
       assert.equal(documentTitleStr.type, 'Str')
       assert.equal(documentTitleStr.value, 'Document Title')
+      // TODO: check loc and range
     })
     // TEMPORARY
     it('should skip lines in header between do not edit markers', () => {
@@ -134,6 +135,7 @@ describe('AsciiDocParser', () => {
       assert.equal(sect.children.length, 2)
       const para = sect.children[1]
       assert.equal(para.type, 'Paragraph')
+      // TODO: check Header nodes (including loc and range attributes)
     })
 
     it('should terminate SectionNode at start of sibling section', () => {
