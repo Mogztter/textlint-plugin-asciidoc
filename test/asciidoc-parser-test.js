@@ -101,7 +101,8 @@ describe('AsciiDocParser', () => {
       assert.deepEqual(sect.loc.end, { line: 1, column: 9 })
       const sectionTitle = sect.children[0]
       assert.equal(sectionTitle.type, 'Header')
-      assert.equal(sectionTitle.raw, 'Usage\n')
+      assert.equal(sectionTitle.raw, '== Usage\n')
+      assert.equal(sectionTitle.children[0].value, 'Usage')
       assert.equal(sectionTitle.depth, 2)
     })
 
