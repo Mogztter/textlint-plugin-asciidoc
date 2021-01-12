@@ -26,27 +26,47 @@ describe('AsciiDocParser', () => {
     })
   })
 
-  context('Header node', () => {
-    it('should create Header node if document starts with doctitle', () => {
+  context('HeaderNode', () => {
+    it('should create HeaderNode if document starts with doctitle', () => {
       const result = parseFixture(loadFixture('doctitle.adoc'))
       assert.equal(result.type, 'Document')
       assert.equal(result.raw, '= Document Title\n')
       assert.equal(result.children.length, 1)
       const header = result.children[0]
-      assert.equal(header.type, 'Header')
+      assert.equal(header.type, 'HeaderNode')
       assert.deepEqual(header.range, result.range)
-      // TODO assert header node has children
+      const documentTitle = header.children[0]
+      assert.equal(documentTitle.type, 'Header')
+      const documentTitleStr = documentTitle.children[0]
+      assert.equal(documentTitleStr.type, 'Str')
+      assert.equal(documentTitleStr.value, 'Document Title')
+    })
+    it('should create HeaderNode if document starts with a document title and contains attributes', () => {
+      const result = parseFixture(loadFixture('doctitle-with-attributes.adoc'))
+      console.log('result', result)
+      assert.equal(result.type, 'Document')
+      assert.equal(result.raw, '= Document Title\n:navtitle: Introduction\n')
+      assert.equal(result.children.length, 1)
+      const header = result.children[0]
+      assert.equal(header.type, 'HeaderNode')
+      assert.equal(header.raw, '= Document Title\n:navtitle: Introduction\n')
+      const documentTitle = header.children[0]
+      assert.equal(documentTitle.type, 'Header')
+      const documentTitleStr = documentTitle.children[0]
+      assert.equal(documentTitleStr.type, 'Str')
+      assert.equal(documentTitleStr.value, 'Document Title')
     })
     // TEMPORARY
     it('should skip lines in header between do not edit markers', () => {
       const result = parseFixture(loadFixture('do-not-edit.adoc'))
       assert.equal(result.children.length, 1)
       const header = result.children[0]
-      assert.equal(header.type, 'Header')
+      assert.equal(header.type, 'HeaderNode')
       assert.deepEqual(header.loc.start, { line: 1, column: 0 })
       assert.deepEqual(header.loc.end, { line: 8, column: 20 })
       assert.equal(header.children.length, 2)
-      assert.equal(header.children[0].type, 'Str')
+      assert.equal(header.children[0].type, 'Header')
+      assert.equal(header.children[0].children[0].type, 'Str')
       assert.equal(header.children[1].type, 'AttributeEntryNode')
     })
     // TEMPORARY
