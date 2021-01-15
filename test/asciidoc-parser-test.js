@@ -43,7 +43,6 @@ describe('AsciiDocParser', () => {
     })
     it('should create HeaderNode if document starts with a document title and contains attributes', () => {
       const result = parseFixture(loadFixture('doctitle-with-attributes.adoc'))
-      console.log('result', result)
       assert.equal(result.type, 'Document')
       assert.equal(result.raw, '= Document Title\n:navtitle: Introduction\n')
       assert.equal(result.children.length, 1)
@@ -230,15 +229,20 @@ describe('AsciiDocParser', () => {
     })
     it('should create CodeBlock when the first line of a paragraph is indented by one or more spaces', () => {
       const result = parseFixture(loadFixture('literal-indent.adoc'))
-      assert.equal(result.children.length, 1)
-      const ex = result.children[0]
-      assert.equal(ex.type, 'CodeBlock')
-      assert.equal(ex.enclosureType, 'literal')
-      assert.deepEqual(ex.loc.start, { line: 1, column: 0 })
-      assert.deepEqual(ex.loc.end, { line: 1, column: 34 })
-      assert.equal(ex.children.length, 1)
-      const str = ex.children[0]
+      //const util = require('util')
+      //console.log(util.inspect(result, {depth: null, showHidden: false, colors: true}))
+      assert.equal(result.children.length, 4)
+      const ex1 = result.children[0]
+      assert.equal(ex1.type, 'CodeBlock')
+      assert.equal(ex1.enclosureType, 'literal')
+      assert.deepEqual(ex1.loc.start, { line: 1, column: 0 })
+      assert.deepEqual(ex1.loc.end, { line: 1, column: 34 })
+      assert.equal(ex1.children.length, 1)
+      const str = ex1.children[0]
       assert.equal(str.type, 'Str')
+      const ex2 = result.children[1]
+      assert.equal(ex2.type, 'CodeBlock')
+      assert.equal(ex2.enclosureType, 'literal')
     })
     it('should create CodeBlock for delimited listing block', () => {
       const result = parseFixture(loadFixture('delimited-listing-block.adoc'))
